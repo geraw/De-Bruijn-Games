@@ -732,7 +732,24 @@ This is a direct generalization of \REF{Definition}{Def:shift game}. Specificall
 	Any binary De Bruijn sequence can be viewed as a solution of a generalized shift game for an appropriate choice of a function $f$.
 \end{proposition}
 \begin{proof}
-	Let $\beta_1, \beta_2, \dots, \beta_{2^n}$ be a binary De Bruijn sequence of order $n$. Let $f\colon \{0,1\}^{n-1} \to \{0,1\}$ be such that $f(b_1,\dots,b_{n-1})=0$ if and only if the substring $b_1,\dots,b_{n-1},1$ appears before the substring $b_1,\dots,b_{n-1},0$ in the sequence $\beta_1, \beta_2, \dots, \beta_{2^n}$. I is easy to show, using aguments similar to those used for the shift game and the reversed prefer-max sequence, that the sequence $ \T{s_t}_{t=0}^{2^n-1}$ of $n$-order binary vectors where, for all $t=0,\dots,2^n-1$, $s_t=\T{\beta_t, \beta_{t+1}, \dots,\beta_{t+n-1}}$ constitutes a solution to the generalized shift game with the function $f$.
+	Consider an arbitrary De Bruijn sequence of order $n$ and let $s_0, s_1, \dots, s_{2^n}$ be the sequence of substrings of length $n$ of the sequence (analogous to the sequence defined in Definition~\ref{Def:pref1}). 
+	
+	Let $f\colon \{0,1\}^{n-1} \to \{0,1\}$ be such that $f(b_0,\dots,b_{n-2})=0$ if and only if the substring $\T{b_0,\dots,b_{n-2},1}$ appears before the substring $\T{b_0,\dots,b_{n-2},0}$. 
+	
+	We will first show, analogous to  Claim~\ref{clm:j>i} above, that if $s_t=\T{b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2})} \neq 0^n$ and $s_{t+1}=\T{b,b_0,\dots,b_{n-2}}$ then the (unique) index $t'$ such that $s_{t'}=\T{1-b,b_0,\dots,b_{n-2}}$ must be bigger than $t+1$. 
+	
+	By the definition of the sequence we have that $s_{t'-1} \in \{ \langle b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})\rangle, \langle b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2}) \rangle \}$. Because $s_{t+1} \neq s_{t'}$, we get that $s_{t} \neq s_{t'-1}$ which leaves us only the option $s_{t'-1}=\T{b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})}$. As $s_{t'-1}$ and $s_{t}$ differ only in the last bit, the definition of $f$ gives us that $s_{t'-1}$ appears closer to the end of the sequence, i.e., $t'-1 > t$, which implies that $t'$ is bigger than $t+1$.
+
+	We will next show, analogous to  Claim~\ref{clm:j<i} above, that if $s_t=\T{b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})}$ and $s_{t+1}=\T{b,b_0,\dots,b_{n-2}}$ then the (unique) index $t'$ such that $s_{t'}=\T{1-b,b_0,\dots,b_{n-2}}$ must be smaller than $t+1$. 
+
+	By the definition of the sequence we have that $s_{t'-1} \in \{ \langle b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})\rangle, \langle b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2}) \rangle \}$. Because $s_{t+1} \neq s_{t'}$, we get that $s_{t} \neq s_{t'-1}$ which leaves us only the option $s_{t'-1}=\T{b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2})}$. As $s_{t'-1}$ and $s_{t}$ differ only in the last bit, the definition of $f$ gives us that $s_{t'-1}$ appears closer to the beginning of the sequence, i.e., $t'-1 < t$, which implies that $t'$ is smaller than $t+1$.
+
+	We will now use the facts established above to argue that the only memoryless strategy for Alice that wins the game against any strategy that Bob may use is the strategy $S$ that maps a state $s_t$ to the leftmost bit of $s_{t+1}$. This is analogous to Porposition~\ref{S-is-optimal-for-Alice}.
+	
+	The fact that if both players apply the strategy $S$ then Alice wins is clear.
+	Assume, towards contradiction, that Bob plays $S$ and there is a game play $\hat{s}_0,\dots, \hat{s}_m,0^n$ where Alice wins at the $m$th turn without following the strategy $S$. Let $m$ be the minimal such index. Let $k \leq m$ be the first index such that the left-most bit of $ \hat{s}_{k+1}$ is not $S( \hat{s}_k)$. Since Bob applies the strategy $S$, it must be Alice that did not follow $S$, so the right-most bit of $\hat{s}_k=\T{b_0,\dots,b_{n-1}}$ must be $f(b_0,\dots,b_{n-2})$. From the minimality of $k$, by the definition of $S$, we get that $ \hat{s}_0=s_0,\dots, \hat{s}_{k-1}=s_{k-1}$ where $s_0,\dots,s_{k-1}$ is a prefix of the sequence given in \REF{Definition}{Def:pref1}. Specifically, by the fact established above, we get that $ \hat{s}_{k+1} \in \{ \hat{s_0},\dots,  \hat{s}_k\}$ which means that a state is repeated. This is in contradiction with the assumption that Alice won the game at the $m$th state because, when both players apply memoryless strategies, a repetition of a state means that the game is going to loop forever. The repeated part cannot contain the state $0^n$ because of the minimality of $m$.
+
+	Finally, analogous to Proposition~\ref{prop:opt-alice}, we show that if Bob plays the strategy $S$ he forces that the game goes for at least $2^n$ rounds before Alice's win. We can assume without loss of generality that Alice applies a memoryless strategy because, if Bob applies a memoryless strategy, there is always a memoryless strategy for Alice that gets to the winning state as fast as possible. We get that both Alice and Bob use $S$ so the play is the sequence given in \REF{Definition}{Def:pref1} whose length is $2^n$.
 \end{proof}
 
 \section{Conclusions and future work}
