@@ -59,6 +59,8 @@
 
 \newcommand\game[2]{ \foreach \b [count=\s] in #1 { \node[draw, circle,fill=color\b!50!yellow,inner sep=1pt] at ({360/\n * (\s - 1)}:\radius) {$\b$}; \draw[<-, >=latex] ({360/\n * (\s-1)+\margin}:\radius) arc ({360/\n * (\s - 1)+\margin}:{360/\n * (\s)-\margin}:\radius); } \draw[vecArrow,fill=gray] (0,0) to (360/\n * #2:\radius*.8); \node[draw, circle, fill=yellow!30!gray] at (0,0) {}; }
 
+
+
 %\pagestyle{plain}
 
 
@@ -91,7 +93,7 @@
 	\address[cs]{Department of Computer Science, Ben-Gurion University of The Negev} 
 	
 	\begin{abstract}
-		We define a simple combinatorial game called the shift game. The game is played by two player, Alice and Bob, over a binary shift register. It goes by shifting the bits in the register to the right where the right-most bit drops out and the players choose which bit to insert from the left. If the bit being dropped out is one, Bob chooses the bit to insert, otherwise Alice does. Alice's goal is to have zeroes in all the bits of the register and Bob goal is to block her from achieving this. An online version of the game where the computer plays Bob's role and the user plays Alice's role is available at \url{www.cs.bgu.ac.il/~geraw/a-combinatorial-game.html}. We analyze this game and give an efficiently computable optimal strategies for both Bob and Alice. We show that if both players play optimally and the initial state of the register is $\T{0,\dots,0}$, the resulting play is the reverse of the well-known prefer-one De Bruijn sequence. This gives an efficiently computable shift-rule for this sequence. We also show that similar relations exists between any given De Bruijn sequence and a game that we define for it.  
+		We define a simple combinatorial game called the shift game. The game is played by two player, Alice and Bob, over a binary shift register. It goes by shifting the bits in the register to the right where the right-most bit drops out and the players choose which bit to insert from the left. If the bit being dropped out is one, Bob chooses the bit to insert, otherwise Alice does. Alice's goal is to have zeroes in all the bits of the register and Bob goal is to block her from achieving this. An online version of the game where the computer plays Bob's role and the user plays Alice's role is available at \url{www.cs.bgu.ac.il/~geraw/a-combinatorial-game.html}. We analyze this game and give an efficiently computable optimal strategies for both Bob and Alice. We show that if both players play optimally and the initial state of the register is $\T{0,\dots,0}$, the resulting play is the reverse of the well-known prefer-one De Bruijn sequence. This gives an efficiently computable shift-rule for this sequence. Beyond the pref-max sequence, to show the generality of the combinatorial games approach, we also define a game with similar properties for any given binary De Bruijn sequence.
 	\end{abstract}
 
 	\begin{keyword}
@@ -523,9 +525,10 @@ The arguments we used in the proof of Corollary~\ref{cor:memoryless} give us tha
 
 In the following two claims we show that the sequence specified in \REF{Definition}{Def:pref1} is such that: (1) if we look at a state from which Bob plays (the rightmost bit is 0) the options that Bob have are to step to the next state in the sequence or to jump to a state that appears later in the sequence; (2) if we look at a state from which Alice plays (the rightmost bit is 1) the options that Alice have are to step to the next state in the sequence or to jump to a state that appears earlier in the sequence. This is illustrated in Figure~\ref{fig:frwd-bckwrd}. We will later show (in propositions~\ref{prop:opt-bob} and~\ref{prop:opt-alice}) that this means that the only optimal strategies for Bob and for Alice are to follow this sequence.
 
+
 \begin{figure}%
 	\centering
-	\subfloat[][When its Alice's turn, her options are the next state on the sequence or a state that appears earlier in the sequence.]{
+	\subfloat[][Alice's options are the next state or an earlier state in the sequence.]{
 		\begin{tikzpicture} [>=latex',line join=bevel,xscale=.6,yscale=.3,font=\sffamily\small, node distance=2cm]
 		
 		\matrix (m) [matrix of math nodes, row sep=0.1em, column sep=3em] {
@@ -545,7 +548,7 @@ In the following two claims we show that the sequence specified in \REF{Definiti
 	
 	}%
 	\qquad
-	\subfloat[][When its Bob's turn, his options are the next state on the sequence or a state that appears later in the sequence.]{
+	\subfloat[][Bob's options are the next state or a state that appears later in the sequence.]{
 		\begin{tikzpicture} [>=latex',line join=bevel,xscale=.6,yscale=.3,font=\sffamily\small, node distance=2cm]
 		
 		\matrix (m) [matrix of math nodes, row sep=0.1em, column sep=3em] {
@@ -602,7 +605,7 @@ For the following two propositions, consider the memoryless strategy $S\colon \{
 	We can assume without loss of generality that Alice applies a memoryless strategy because, if Bob applies a memoryless strategy, there is always a memoryless strategy for Alice that gets to the winning state as fast as possible. Then, by \REF{Proposition}{S-is-optimal-for-Alice}, we get that both Alice and Bob use $S$ so the play is the sequence given in \REF{Definition}{Def:pref1} whose length is $2^n$.
 \end{proof}
 
-\section{An efficient algorithm for commutating of the optimal strategies and an efficiently computable shift-rule for the prefer-one sequence}
+\section{An efficient algorithm for computing the optimal strategies and the shift-rule for the prefer-one sequence}
 \label{sec:efficient-optimal}
 
 The ``prefer-one'' construction given in \REF{Definition}{Def:pref1} characterizes the optimal strategies for both Alice and Bob, as shown in the previous section, but it does not provide an efficient mechanism for computing the next move given the current state. Note that a naive implementation of the construction proposed in \REF{Definition}{Def:pref1} requires an order of $2^n$ memory and an order of $2^n$ time. 
@@ -612,11 +615,11 @@ In this section, we provide an efficient way to compute the strategies. Specific
 The ranking function we propose is given in the following two definitions:
 
 \begin{definition}
-	For a state $s=\T{b_0,\dots,b_{n-1}}$ and $k \in \{0,\dots,n-1\}$ let  $rank(s,k)=\sum_{i=1}^{n}  b_{k-i} 2^i$ where index arithmetic is modulo $n$.
+	For a state $s=\T{b_0,\dots,b_{n-1}}$ and $k \in \{0,\dots,n-1\}$ let  $val(s,k)=\sum_{i=1}^{n}  b_{k-i} 2^i$ where index arithmetic is modulo $n$ (i.e., we add $n$ to negative indexes).
 \end{definition}
-The index $k$ that maximizes the rank is called the $head$ of the state and the maximal rank is called the $rank$ of the state:
+The index $k$ that maximizes the value is called the $head$ of the state and the maximal value is called the $rank$ of the state:
 \begin{definition}
-	For a state $s$ let  $head(s)=\arg \max_k rank(s,k)$ and $rank(s)=rank(s,head(s))$.
+	For a state $s$ let  $head(s)=\arg \max_k val(s,k)$ and $rank(s)=val(s,head(s))$.
 \end{definition}
 
 For example, the rank of the state
@@ -657,9 +660,9 @@ Using this notation, we can describe an easy to compute winning strategy for Ali
 	%$tail(s) = (\max \{ i \leq head(s) \colon b_{(i+n) \bmod n} \neq 0 \}+n)  \bmod n.$
 \end{definition}
 
-For example, for the above state $tail(s)=n-2$, corresponding to the digit at five o'clock in the circular depiction of the state. In general, in the circular depiction of states, $tail(s)$ is the first nonzero bit after (inclusive) $head(s)$ going clockwise.
+For example, for the above state, $tail(s)=n-2$, corresponding to the digit at five o'clock in the circular depiction of the state. In general, in the circular depiction of states, $tail(s)$ is the first nonzero bit after (inclusive) $head(s)$ going clockwise.
 
-Now, we can state the winning strategy for Alice: put zero if and only if the handle is on $tail(s)$, i.e., if and only if $tail(s)=n-1$. Formally:
+We can now state the winning strategy for Alice: put zero if and only if the handle is on $tail(s)$, i.e., if and only if $tail(s)=n-1$. Formally:
 
 \begin{proposition}
 	The only winning memoryless strategy for Alice is given by  $$A(s) =
@@ -672,7 +675,7 @@ Now, we can state the winning strategy for Alice: put zero if and only if the ha
 		\label{prop:alice-eff-comp-strategy}
 \end{proposition}
 \begin{proof}
-	If we are in a state were $tail(s)=n-1$, i.e., the handle in the circular depiction of the game points at the $tail(s)$ bit, then Alice's strategy effectively starts from the least significant nonzero bit of $rank(s)$ and puts zero in it (we are talking about the rank of the state after Alice's move). If Bob is not going to switch any of the zeroes in this number to one (and, by that, increase the rank of the state), we are going to arrive at the state $0^n$ and Alice wins. Therefore, we get that either the rank of the state increases repeatedly until we reach the state $1^n$ from which Alice wins in $n$ turns or Bob lets the game arrive at the state $0^n$ before that. Either way, Alice wins. 
+	If we are in a state were $tail(s)=n-1$, i.e., the handle in the circular depiction of the game points at the $tail(s)$ bit, then Alice's strategy effectively starts from the least significant nonzero bit of $rank(s)$ and puts zero in it (we are talking about the rank of the state after Alice's move). If Bob is not going to switch any of the zeroes in this number to one (and, by that, increase the rank of the state), we are going to arrive at the state $0^n$ and Alice wins. Therefore, we get that either the rank of the state increases repeatedly until we reach the state $1^n$, from which Alice wins in $n$ turns, or Bob lets the game arrive at the state $0^n$ before that. Either way, Alice wins. By Proposition~\ref{prop:opt-bob}, this is the only winning strategy for Alice.
 \end{proof}
 
 \begin{proposition}
@@ -687,26 +690,26 @@ Now, we can state the winning strategy for Alice: put zero if and only if the ha
 	\label{prop:bob-eff-comp-strategy}
 \end{proposition}
 \begin{proof}
-	With this strategy Bob minimizes the inevitable increase of rank. 
+	With this strategy Bob minimizes the inevitable increase of rank. By Proposition~\ref{prop:opt-alice}, this is the only winning strategy for Bob.
 \end{proof}
 
-The only nontrivial computation in the strategies given in Proposition~\ref{prop:alice-eff-comp-strategy} and in Proposition~\ref{prop:bob-eff-comp-strategy} is the operator $tail(s)$ which can directly computed in $O(n)$ time and memory. 
+The only nontrivial computation in the strategies given in Proposition~\ref{prop:alice-eff-comp-strategy} and in Proposition~\ref{prop:bob-eff-comp-strategy} is the operator $tail(s)$ which can be directly computed in $O(n)$ time and memory. 
 
 Based on the strategies given in  in Proposition~\ref{prop:alice-eff-comp-strategy} and in Proposition~\ref{prop:bob-eff-comp-strategy} and the fact that the game play is exactly the reverse of the prefer-one sequence, we can give the following shift-rule for this sequence:
 
-\begin{proposition}
+\begin{corrolary}
 The function
 $$nxt(b_0,\dots,b_{n-2},b_{n-1})=\begin{cases}
 	\T{1-b_{n-1},b_0,\dots,b_{n-2}} & \text{if } tail(b_0,\dots,b_{n-2},1); \\
 	\T{b_{n-1},b_0,\dots,b_{n-2}} & \text{otherwise.}
 \end{cases}$$
 is a shift rule for the reversed prefer-one De Bruijn sequence.
-\end{proposition}
+\end{corrolary}
 
 
 Since $tail(s)$ can be computed with $O(n)$ time and memory complexity, we say that this shift-rule is efficiently computable.
 
-\section{Games for all De Bruijn sequences} 
+\section{Beyond pref-max: A game for any De Bruijn sequence} 
 \label{sec:games-for-all-DB-seq}
 
 A generalization of the prefer-one construction, to construct all binary De Bruijn of ordern $n$, was proposed by L. R. Ford~\cite{ford1957cyclic}. The, so called, Ford algorithm consists of a set of rules that determine which symbol is tried first after a word of length $n-1$ appears. In this section, we follow this direction towards proposal of a game for each De Bruijn sequence such that the optimal strategies for Bob and for Alice for the game generate the sequence. This is a generalization of what we showed above. We follow Ford in that we apply the same set of rules to decide, given the first $n-1$ bits of the game state, whether one in the last bit means Alice's or Bob's turn. For example, the game given in Definition~   \ref{Def:shift game} correspond to the constant rule that says that if the last bit is one its always Alice's turn.
@@ -736,20 +739,15 @@ This is a direct generalization of \REF{Definition}{Def:shift game}. Specificall
 	
 	Let $f\colon \{0,1\}^{n-1} \to \{0,1\}$ be such that $f(b_0,\dots,b_{n-2})=0$ if and only if the substring $\T{b_0,\dots,b_{n-2},1}$ appears before the substring $\T{b_0,\dots,b_{n-2},0}$. 
 	
-	We will first show, analogous to  Claim~\ref{clm:j>i} above, that if $s_t=\T{b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2})} \neq 0^n$ and $s_{t+1}=\T{b,b_0,\dots,b_{n-2}}$ then the (unique) index $t'$ such that $s_{t'}=\T{1-b,b_0,\dots,b_{n-2}}$ must be bigger than $t+1$. 
+	We will first show, analogous to  Claim~\ref{clm:j>i}, that if $s_t=\langle b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2})\rangle \neq 0^n$ and $s_{t+1}=\langle b,b_0,\dots,b_{n-2}\rangle$ then the (unique) index $t'$ such that $s_{t'}=\T{1-b,b_0,\dots,b_{n-2}}$ must be bigger than $t+1$. 
 	
-	By the definition of the sequence we have that $s_{t'-1} \in \{ \langle b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})\rangle, \langle b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2}) \rangle \}$. Because $s_{t+1} \neq s_{t'}$, we get that $s_{t} \neq s_{t'-1}$ which leaves us only the option $s_{t'-1}=\T{b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})}$. As $s_{t'-1}$ and $s_{t}$ differ only in the last bit, the definition of $f$ gives us that $s_{t'-1}$ appears closer to the end of the sequence, i.e., $t'-1 > t$, which implies that $t'$ is bigger than $t+1$.
+	Because $s_{t'-1}$ and $s_{t'}$ are consecutive substrings of length $n$, we have that $s_{t'-1} \in \{ \langle b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})\rangle, \langle b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2}) \rangle \}$. Because $s_{t+1} \neq s_{t'}$, we get that $s_{t} \neq s_{t'-1}$ which leaves us only the option $s_{t'-1}=\T{b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})}$. As $s_{t'-1}$ and $s_{t}$ differ only in the last bit, the definition of $f$ gives us that $s_{t'-1}$ appears closer to the end of the sequence, i.e., $t'-1 > t$, which implies that $t'$ is bigger than $t+1$.
 
 	We will next show, analogous to  Claim~\ref{clm:j<i} above, that if $s_t=\T{b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})}$ and $s_{t+1}=\T{b,b_0,\dots,b_{n-2}}$ then the (unique) index $t'$ such that $s_{t'}=\T{1-b,b_0,\dots,b_{n-2}}$ must be smaller than $t+1$. 
 
-	By the definition of the sequence we have that $s_{t'-1} \in \{ \langle b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})\rangle, \langle b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2}) \rangle \}$. Because $s_{t+1} \neq s_{t'}$, we get that $s_{t} \neq s_{t'-1}$ which leaves us only the option $s_{t'-1}=\T{b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2})}$. As $s_{t'-1}$ and $s_{t}$ differ only in the last bit, the definition of $f$ gives us that $s_{t'-1}$ appears closer to the beginning of the sequence, i.e., $t'-1 < t$, which implies that $t'$ is smaller than $t+1$.
-
-	We will now use the facts established above to argue that the only memoryless strategy for Alice that wins the game against any strategy that Bob may use is the strategy $S$ that maps a state $s_t$ to the leftmost bit of $s_{t+1}$. This is analogous to Porposition~\ref{S-is-optimal-for-Alice}.
+	Because $s_{t'-1}$ and $s_{t'}$ are consecutive substrings of length $n$, we have that $s_{t'-1} \in \{ \langle b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})\rangle, \langle b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2}) \rangle \}$. Because $s_{t+1} \neq s_{t'}$, we get that $s_{t} \neq s_{t'-1}$ which leaves us only the option $s_{t'-1}=\T{b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2})}$. As $s_{t'-1}$ and $s_{t}$ differ only in the last bit, the definition of $f$ gives us that $s_{t'-1}$ appears closer to the beginning of the sequence, i.e., $t'-1 < t$, which implies that $t'$ is smaller than $t+1$.
 	
-	The fact that if both players apply the strategy $S$ then Alice wins is clear.
-	Assume, towards contradiction, that Bob plays $S$ and there is a game play $\hat{s}_0,\dots, \hat{s}_m,0^n$ where Alice wins at the $m$th turn without following the strategy $S$. Let $m$ be the minimal such index. Let $k \leq m$ be the first index such that the left-most bit of $ \hat{s}_{k+1}$ is not $S( \hat{s}_k)$. Since Bob applies the strategy $S$, it must be Alice that did not follow $S$, so the right-most bit of $\hat{s}_k=\T{b_0,\dots,b_{n-1}}$ must be $f(b_0,\dots,b_{n-2})$. From the minimality of $k$, by the definition of $S$, we get that $ \hat{s}_0=s_0,\dots, \hat{s}_{k-1}=s_{k-1}$ where $s_0,\dots,s_{k-1}$ is a prefix of the sequence given in \REF{Definition}{Def:pref1}. Specifically, by the fact established above, we get that $ \hat{s}_{k+1} \in \{ \hat{s_0},\dots,  \hat{s}_k\}$ which means that a state is repeated. This is in contradiction with the assumption that Alice won the game at the $m$th state because, when both players apply memoryless strategies, a repetition of a state means that the game is going to loop forever. The repeated part cannot contain the state $0^n$ because of the minimality of $m$.
-
-	Finally, analogous to Proposition~\ref{prop:opt-alice}, we show that if Bob plays the strategy $S$ he forces that the game goes for at least $2^n$ rounds before Alice's win. We can assume without loss of generality that Alice applies a memoryless strategy because, if Bob applies a memoryless strategy, there is always a memoryless strategy for Alice that gets to the winning state as fast as possible. We get that both Alice and Bob use $S$ so the play is the sequence given in \REF{Definition}{Def:pref1} whose length is $2^n$.
+	With these two facts, analogous to claims \ref{clm:j<i} and  Claim~\ref{clm:j>i}, we are exactly where we were before propositions \ref{S-is-optimal-for-Alice} and \ref{prop:opt-alice} when we were analyzing the pref-one sequence. It follows, using the same arguments as in the proofs of these propositions, that if both players play optimally, the resulting game play is $s_0,\dots,s_{2^n-1}$.
 \end{proof}
 
 \section{Conclusions and future work}
