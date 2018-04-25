@@ -41,13 +41,10 @@
 
 \newcommand{\REF}[2]{#1~\ref{#2}}
 
-\newcommand{\T}[1]{\langle{#1}\rangle} \DeclareMathOperator{\drop}{drop} \DeclareMathOperator{\dropbits}{drop\_bits} \DeclareMathOperator{\dropstates}{drop\_states} \DeclareMathOperator{\leadingForm}{LeadingForm} \DeclareMathOperator{\dv}{div} %\DeclareMathOperator{\trim}{trim}
-\DeclareMathOperator{\castling}{castling} \DeclareMathOperator{\b2d}{bin2dec}
-
-\DeclareMathOperator{\bro}{spouse} \DeclareMathOperator{\ind}{ind} \DeclareMathOperator{\nega}{neg} \DeclareMathOperator{\trans}{D} %\DeclareMathOperator{\same}{nxt-same}
-%\DeclareMathOperator{\op}{nxt-opp}
-
-\DeclareMathOperator{\spouse}{spouse} \DeclareMathOperator{\nxtsame}{shl-same} \DeclareMathOperator{\nxtopp}{shl-opp} \DeclareMathOperator{\idx}{idx}
+\newcommand{\T}[1]{\langle{#1}\rangle} 
+\DeclareMathOperator{\head}{head} 
+\DeclareMathOperator{\tail}{tail} 
+\DeclareMathOperator{\nxt}{nxt} 
 
 
 \newcommand{\AorB}[2]{\bigl(#2\text{?}A(#1)\text{:}B(#1)\bigr)}
@@ -64,7 +61,7 @@
 %\pagestyle{plain}
 
 
-\title{A Combinatorial Game whose Solution Gives an Efficiently Computable Shift-Rule for the Reversed Prefer-One de Bruijn Sequence}
+\title{A Combinatorial Game whose Solution Gives an Efficiently Computable Shift-Rule for the Prefer-One de Bruijn Sequence}
 
 %\author{Gera Weiss\\ Department of Computer Science \\ Ben Gurion University of the Negev\\ Israel }
 
@@ -94,7 +91,7 @@
 	\address{Department of Computer Science, Ben-Gurion University of The Negev} 
 	
 	\begin{abstract}
-		We define a simple combinatorial game called the shift game. The game is played by two players, Alice and Bob, over a binary shift register. It goes by shifting the bits in the register to the right where the right-most bit drops out and the players choose which bit to insert from the left. If the bit being dropped out is one, Bob chooses the bit to insert, otherwise Alice does. Alice's goal is to have zeroes in all the bits of the register and Bob's goal is to block her from achieving this. An online version of the game where the computer plays Bob's role and the user plays Alice's role is available at \url{www.cs.bgu.ac.il/~geraw/a-combinatorial-game.html}. We analyze this game and give an efficiently computable optimal strategies for both Bob and Alice. We show that if both players play optimally and the initial state of the register is $\T{0,\dots,0}$, the resulting play is the reverse of the well known prefer-one de Bruijn sequence. This gives an efficiently computable shift-rule that can be used for an efficient construction of this sequence. Beyond the prefer-one sequence, to show the generality of the combinatorial games approach, we also define a games with similar properties for all binary de Bruijn sequence.
+		We define a simple combinatorial game called the shift game. The game is played by two players, Alice and Bob, over a binary shift register. It goes by shifting the bits in the register to the right where the right-most bit drops out and the players choose which bit to insert from the left. If the bit being dropped out is zero, Bob chooses the bit to insert, otherwise Alice does. Alice's goal is to have zeroes in all the bits of the register and Bob's goal is to block her from achieving this. An online version of the game where the computer plays Bob's role and the user plays Alice's role is available at \url{www.cs.bgu.ac.il/~geraw/a-combinatorial-game.html}. We analyze this game and give an efficiently computable optimal strategies for both Bob and Alice. We show that if both players play optimally and the initial state of the register is $\T{0,\dots,0}$, the resulting play is the reverse of the well known prefer-one de Bruijn sequence. This gives an efficiently computable shift-rule that can be used for an efficient construction of this sequence. Beyond the prefer-one sequence, to show the generality of the combinatorial games approach, we also define a games with similar properties for all binary de Bruijn sequence.
 	\end{abstract}
 
 	\begin{keyword}
@@ -109,8 +106,10 @@
 
 A binary de Bruijn sequence of order $n$ is a sequence of bits (elements of $\{0,1\}$) that contains every possible substring of length $n$ exactly once. Such sequences are of length $2^n$. There are $2^{2^{n-1}-n}$ de Bruijn sequences for each order $n$ (see~\cite{de1975acknowledgement} for a trace of the origins of this result). One such sequence, which is the focus of this paper, can be constructed using the prefer-one algorithm~\cite{Mar34}: Given an integer $n \geq 1$ as a parameter, the algorithm puts $n$ zeroes, then it repeatedly tries $1$ as the next bit and commit to it when the word formed by the last $n$ bits has not been encountered previously in the sequence, otherwise the $1$ is rolled back and $0$ is added. The process stops when both $0$ and $1$ do not introduce a new word. It is well known that this process produces a de Bruijn sequence~\cite{Mar34}. In this paper, for notational convenience, we move the $n$ leading zeroes to the end of the sequence.
 
-A shift-rule for a de Bruijn sequence of order $n$ is a function that maps each substring of length $n$ to the next substring of length $n$ in the sequence~\cite{SAWADA2017524}. In this paper we use combinatorial game theory~\cite{berlekamp2003winning} to develop an efficiently computable ($O(n)$ time and memory) shift-rule for the reversed prefer-one sequence. Note that the shift-rule described above is not efficient as it requires exponential amount of memory and time. Beyond the formulation of the rule, the paper reveals a new connection between the combinatorics of de Bruijn sequences and games. We propose a two-player combinatorial game called ``shift game" such that, when both players play optimally, the sequence of states of the game form the prefer-one de Bruijn sequence. We then analyze the game to find efficiently computable strategies for the players and get and, from that, get an efficiently computable shift-rule for the sequence. We also show that it is possible to extend the approach to all other de Bruijn sequences: given any de Bruijn sequence we define a two-player combinatorial game such that the sequence is generated if both players play optimally. This show the generality of our approach, if one can design an efficiently computable strategy for any of these games, she automatically gets an efficiently computable shift-rule for the corresponding sequence.
+A shift-rule for a de Bruijn sequence of order $n$ is a function that maps each substring of length $n$ to the next substring of length $n$ in the sequence~\cite{SAWADA2017524}. In this paper we use combinatorial game theory~\cite{berlekamp2003winning} to develop an efficiently computable ($O(n)$ time and memory) shift-rule for the reversed prefer-one sequence. Note that the shift-rule described above is not efficient as it requires exponential amount of memory and time. Beyond the formulation of the rule, the paper reveals a new connection between the combinatorics of de Bruijn sequences and games. We propose a two-player combinatorial game called ``shift game" such that, when both players play optimally, the sequence of states of the game form the prefer-one de Bruijn sequence. We then analyze the game to find efficiently computable strategies for the players and get and, from that, get an efficiently computable shift-rule for the sequence. We also show that it is possible to extend the approach to all other de Bruijn sequences: given any de Bruijn sequence we define a two-player combinatorial game such that the sequence is generated if both players play optimally. This shows the generality of our approach: if we can design an efficiently computable strategy for any of these games, we automatically get an efficiently computable shift-rule for the corresponding sequence.
 
+
+A preliminary version of this paper was presented in a control-theory conference~\cite{weiss2007combinatorial} where the focus was on solving a control theoretic problem using a combinatorial analysis. This was our initial motivation for studying the prefer-max shift-game. Here, we improve the analysis (give a solution with a lower complexity), generalize it to other De-Bruijn sequences, give a more complete proofs, and take a very different focus. Specifically, for the combinatorics research community we believe that the main application of shift-games is as a tool for finding efficient procedures for computing shift-rules of De-Bruijn sequences as demonstrated by the shift-game that corresponds to the prefer-one sequence. 
 
 The paper proceeds as follows. In \REF{Section}{sec:game} we define the shift game. In \REF{Section}{sec:alice-wins} we solve the game. In \REF{Section}{sec:optimal-strategies} we show that a solution to the game gives a shift-rule for the reversed prefer-one sequence. In Section~\ref{sec:efficient-optimal} we provide efficiently computable strategies for Alice and Bob and propose an efficient shift-rule for the reversed prefer-one sequence. In Section~\ref{sec:games-for-all-DB-seq} we propose a family of games that correspond to all the binary de Bruijn sequences.
 
@@ -128,9 +127,6 @@ The paper proceeds as follows. In \REF{Section}{sec:game} we define the shift ga
 			\text{ if $b_{n-1} = 0$;}
 		\end{cases}$$ where $A \colon(\{0,1\}^n)^* \to \{0,1\}$ is Alice's strategy and $B\colon (\{0,1\}^n)^* \to \{0,1\}$ is Bob's strategy. Both strategies choose the next move as a function of all the history of the game. Alice wins the game if there is $t>0$ such that $s_t=s_0$ and Bob wins otherwise.
 \end{definition}
-
-This game was first introduced in~\cite{weiss2007combinatorial} for the purpose of solving a problem in control theory. 
-
 
 \begin{figure}[]
 	\center
@@ -253,7 +249,7 @@ A direct visualization of the game is given in Figure~\ref{fig:shift-game}. Anot
 	}
 \end{center}
 
-If the switch that the hand points at is at a 1 state, Alice can flip it to 0 or leave it at 1. If the switch is 0, its Bob's choice of whether to flip it to 1 or leave it as it is. Then, the hand moves to the next switch, say clockwise, and the game repeats. The game begins with all the switches at 0. Alice wins if the game comes to this state again, and Bob wins otherwise. We call the switch that the handle points at in the beginning of the game $sw_0$, the switch that is next to it clockwise $sw_1$, and so on up to $sw_{n-1}$. If we denote the state of the $i$th switch at turn number $t$ by $sw_i(t) \in \{0,1\}$ and the position of the hand by $h(t) = t \bmod n$, it is easy to see that the relation between this representation of the game and the one given in Definition~\ref{Def:shift game} is $s_t=\langle sw_{h(t)-1}(t), \dots, sw_{h(t)-n}(t) \rangle$ where the arithmetic for switch indexes is modulo $n$ (a negative index, $-i$, is considered as $n-i$). For example, the states of the game depicted above are:
+If the switch that the hand points at is at a 1 state, Alice can flip it to 0 or leave it at 1. If the switch is 0, it is Bob's choice of whether to flip it to 1 or leave it as it is. Then, the hand moves to the next switch, say clockwise, and the game repeats. The game begins with all the switches at 0. Alice wins if the game comes to this state again, and Bob wins otherwise. We call the switch that the handle points at in the beginning of the game $sw_0$, the switch that is next to it clockwise $sw_1$, and so on up to $sw_{n-1}$. If we denote the state of the $i$th switch at turn number $t$ by $sw_i(t) \in \{0,1\}$ and the position of the hand by $h(t) = t \bmod n$, it is easy to see that the relation between this representation of the game and the one given in Definition~\ref{Def:shift game} is $s_t=\langle sw_{h(t)-1}(t), \dots, sw_{h(t)-n}(t) \rangle$ where the arithmetic for switch indexes is modulo $n$ (a negative index, $-i$, is considered as $n-i$). For example, the states of the game depicted above are:
 %\scalebox{0.7}{
 $\cdots \to \T{1,0,1,1,0,1,0,1,0,0,1,0} \to \T{1,1,0,1,1,0,1,0,1,0,0,1} \to \T{0,1,1,0,1,1,0,1,0,1,0,0} \to \T{0,0,1,1,0,1,1,0,1,0,1,0} \to \cdots$.
 %}
@@ -463,8 +459,7 @@ Another way to visualize this game is as a B\"uchi game over a de Bruijn graph, 
 	\end{tikzpicture}}
 \end{center}
 
-
-The shift game can also be viewed as a B\"uchi game played over the $n$-dimensional binary de Bruijn graph, depicted above for $n=5$, as follows. The vertices of the graph are all possible binary sequences of length $n$. If one of the vertices can be expressed as another vertex by shifting all its bits by one place to the right and adding a new bit at the end of this vertex, then the latter has a directed edge to the former. The vertices whose rightmost bit is zero are ellipses and the vertices whose rightmost bit is one are squares. The only initial state is $0^n$ and it is also the only accepting state. Clearly, the game given in Definition~   \ref{Def:shift game} is equivalent to the B\"uchi game over the $n$-dimensional binary de Bruijn graph.
+The shift game can also be viewed as a B\"uchi game played over the $n$-dimensional binary de Bruijn graph, depicted above for $n=5$, as follows. The vertices of the graph are all possible binary sequences of length $n$. If one of the vertices can be expressed as another vertex by shifting all its bits by one place to the right and adding a new bit at the end of this vertex, then the latter has a directed edge to the former. The vertices whose rightmost bit is zero are ellipses and the vertices whose rightmost bit is one are squares. The only initial state is $0^n$ and it is also the only accepting state. Clearly, the game given in Definition~\ref{Def:shift game} is equivalent to the B\"uchi game over the $n$-dimensional binary de Bruijn graph.
 
 \section{A direct proof that Alice can always win} 
 \label{sec:alice-wins}
@@ -476,16 +471,16 @@ Our first result is that Alice can always win the shift game, for any $n$:
 \begin{proof}
 	To allow a proof by induction, we will prove the stronger claim that Alice can win even a more challenging game where the game begin in any arbitrary state (that, say, Bob can choose) and where she wins only if there are infinitely many $k \in \N$ such that $s_{k \cdot n} = \langle 0, \dots, 0\rangle$. In other words, not only that Alice has to force the state of the game to be $\langle 0, \dots, 0\rangle$, she has to arrive at this state after a number of turns that is a multiple of $n$ and she has to do it repeatedly.
 
-	The proof goes by induction on $n$. If $n=1$, Alice has a trivial winning strategy: If the initial state is $ \T{1}$ Alice can chose the second state to be $ \T{0}$ and win. If the initial state is $ \T{0}$ Bob can either choose the second state to be $ \T{0}$ and then Alice wins, or have the second state be $ \T{1}$ and then Alice can choose the third state to be $ \T{0}$ and win. Since Alice can do this repeatedly, this proves also the stronger claim.
+	The proof goes by induction on $n$. If $n=1$, Alice has a trivial winning strategy: If the initial state is $\T{1}$ Alice can chose the second state to be $\T{0}$ and win. If the initial state is $\T{0}$ Bob can either choose the second state to be $\T{0}$ and then Alice wins, or have the second state be $\T{1}$ and then Alice can choose the third state to be $\T{0}$ and win. Since Alice can do this repeatedly, this proves also the stronger claim.
 
 	For the induction step, we will use the visualization of the game as $n$ two-state switches at the periphery of a dial. Assume, by induction, that Alice has a winning strategy for $n$ switches. The proof goes by providing a winning strategy for Alice in the game over $n+1$ switches in which the assumed strategy (over $n$ switches) is used as a black box.
 
-	The trick for Alice is to ignore the first switch ($sw_0$) and pretend that she is playing the game only over the other switches. When the hand leaves the last switch ($sw_{n-1}$) and moves on, Alice pretends that it did not stop at the first switch as if it moved directly to the second one, as if the first switch does not exist. If Alice has to make a decision about the first switch, when it is 1 and the hand points at it, she always leaves it as it is.
+	The trick for Alice is to ignore the first switch ($sw_0$) and pretend that she is playing the game only over the other switches. When the hand leaves the last switch ($sw_{n-1}$) and moves on, Alice pretends that it moved directly to the second one, as if the first switch does not exist. If Alice has to make a decision about the first switch, when it is $1$ and the hand points at it, she always leaves it as it is.
 
-	Now, by the induction hypothesis, as Alice pretends that she is playing a game over $n$ switches, she can make them all 0. Moreover, as she can win the more challenging game described at the beginning of the proof, she can do so after a number of turns that divides $n$, i.e, she can force arrival to a state where all the switches but the first are 0 and the hand points at the first switch. At this game turn, the first switch may be 1 or 0. If it is 1, Alice can turn it to 0 and win the game over $n+1$ switches. If it is 0, Bob may choose to leave it 0 or switch it to 1. If Bob leaves the switch 0, Alice again wins. If, on the other hand, Bob chooses to turn the switch to 1, Alice can continue playing her strategy and end up, once more, with all the switches but the first at $0$ and the hand pointing at the first switch. This time, however, the first switch is at the $1$ position because Alice leaves it as it is whenever the hand passes it. Thus, also in this case, Alice wins the game over $n+1$ bits.
+	Now, by the induction hypothesis, as Alice pretends that she is playing a game over $n$ switches, she can make them all $0$. Moreover, as she can win the more challenging game described at the beginning of the proof, she can do so after a number of turns that is a multiple of $n$, i.e, she can force arrival to a state where all the switches but the first are $0$ and the hand points at the first switch. At this game turn, the first switch may be $1$ or $0$. If it is $1$, Alice can turn it to $0$ and win the game over $n+1$ switches. If it is $0$, Bob may choose to leave it $0$ or switch it to $1$. If Bob leaves the switch $0$, Alice again wins. If, on the other hand, Bob chooses to turn the switch to $1$, Alice can continue playing her strategy and end up, once more, with all the switches but the first at $0$ and the hand pointing at the first switch. This time, however, the first switch is at the $1$ position because Alice leaves it as it is whenever the hand passes it. Thus, also in this case, Alice wins the game over $n+1$ bits with the handle positioned after the first bit (i.e., the number of turns is a multiple of $n+1$).
 \end{proof}
 
-Note that the strategy proposed in the proof is not memoryless, i.e., Alice's move depends not only on the state of the game but also on the position of the handle, i.e., on the turn number modulo $n$. Formally, a strategy $A \colon(\{0,1\}^n)^* \to \{0,1\}$ is called memoryless if there is a function $ \hat{A} \colon \{0,1\}^n \to\{0,1\}$ such that $A(s_1,\dots,s_n)= \hat{A}(s_n)$. To shorten notation, we will just say, from now on, that $ \hat{A}$ is a memoryless strategy for Alice. The following corollary establishes that there is a winning memoryless strategy for Alice:
+Note that the strategy proposed in the proof is not memoryless, i.e., Alice's move depends not only on the state of the game but also on the position of the handle, i.e., on the turn number modulo $n$. Formally, a strategy $A \colon(\{0,1\}^n)^* \to \{0,1\}$ is called memoryless if there is a function $\hat{A} \colon \{0,1\}^n \to\{0,1\}$ such that $A(s_1,\dots,s_n)= \hat{A}(s_n)$. To shorten notation, we will just say, from now on, that $\hat{A}$ is a memoryless strategy for Alice. The following corollary establishes that there is a winning memoryless strategy for Alice:
 
 \begin{corrolary}
 	There exists a memoryless strategy for Alice that wins against any (not necessarily memoryless) strategy that Bob may play.
@@ -525,7 +520,7 @@ The arguments we used in the proof of Corollary~\ref{cor:memoryless} give us tha
 	\REF{Definition}{Def:pref1}, is a permutation of the set of all $n$-ary binary tuples, namely $\{s_t\}_{t=0}^{2^n-1}=\{0,1\}^n$.
 \end{theorem}
 
-In the following two claims we show that the sequence specified in \REF{Definition}{Def:pref1} is such that: (1) if we look at a state from which Bob plays (the rightmost bit is 0) the options that Bob have are to step to the next state in the sequence or to jump to a state that appears later in the sequence; (2) if we look at a state from which Alice plays (the rightmost bit is 1) the options that Alice have are to step to the next state in the sequence or to jump to a state that appears earlier in the sequence. This is illustrated in Figure~\ref{fig:frwd-bckwrd}. We will later show (in propositions~\ref{prop:opt-bob} and~\ref{prop:opt-alice}) that this means that the only optimal strategies for Bob and for Alice are to follow this sequence.
+In the following two claims we show that the sequence specified in \REF{Definition}{Def:pref1} is such that: (1) if we look at a state from which Bob plays (the rightmost bit is 0) the options that Bob has are to step to the next state in the sequence or to jump to a state that appears later in the sequence; (2) if we look at a state from which Alice plays (the rightmost bit is 1) the options that Alice has are to step to the next state in the sequence or to jump to a state that appears earlier in the sequence. This is illustrated in Figure~\ref{fig:frwd-bckwrd}. We will later show (in propositions~\ref{prop:opt-bob} and~\ref{prop:opt-alice}) that this means that the only optimal strategies for Bob and for Alice are to follow this sequence.
 
 
 \begin{figure}%
@@ -596,7 +591,7 @@ For the following two propositions, consider the memoryless strategy $S\colon \{
 \end{proposition}
 \begin{proof}
 	The fact that if both players apply the strategy $S$ then Alice wins is clear because the sequence $\T{s_t}_{t=0}^{2^n-1}$ ends with $\T{0,\dots,0,1}$ and at this state Alice plays 0 and wins.
-	Assume, towards contradiction, that Bob plays $S$ and there is a game play $\hat{s}_0,\dots, \hat{s}_m,0^n$ where Alice wins at the $m$th turn without following the strategy $S$. Let $m$ be the minimal such index. Let $k \leq m$ be the first index such that the left-most bit of $ \hat{s}_{k+1}$ is not $S( \hat{s}_k)$. Since Bob applies the strategy $S$, it must be Alice that did not follow $S$, so the right-most bit of $ \hat{s}_k$ must be one. From the minimality of $k$, by the definition of $S$, we get that $ \hat{s}_0=s_0,\dots, \hat{s}_{k-1}=s_{k-1}$ where $s_0,\dots,s_{k-1}$ is a prefix of the sequence given in \REF{Definition}{Def:pref1}. Specifically, by Claim~   \ref{clm:j<i}, we get that $ \hat{s}_{k+1} \in \{ \hat{s_0},\dots,  \hat{s}_k\}$ which means that a state is repeated. This is in contradiction with the assumption that Alice won the game at the $m$th state because, when both players apply memoryless strategies, a repetition of a state means that the game is going to loop forever. The repeated part cannot contain the state $0^n$ because of the minimality of $m$.
+	Assume, towards contradiction, that Bob plays $S$ and there is a game play $\hat{s}_0,\dots, \hat{s}_m,0^n$ where Alice wins at the $m$th turn without following the strategy $S$. Let $m$ be the minimal such index. Let $k \leq m$ be the first index such that the left-most bit of $ \hat{s}_{k+1}$ is not $S( \hat{s}_k)$. Since Bob applies the strategy $S$, it must be Alice that did not follow $S$, so the right-most bit of $ \hat{s}_k$ must be one. From the minimality of $k$, by the definition of $S$, we get that $ \hat{s}_0=s_0,\dots, \hat{s}_{k-1}=s_{k-1}$ where $s_0,\dots,s_{k-1}$ is a prefix of the sequence given in \REF{Definition}{Def:pref1}. Specifically, by \REF{Claim}{clm:j<i}, we get that $ \hat{s}_{k+1} \in \{ \hat{s_0},\dots,  \hat{s}_k\}$ which means that a state is repeated. This is in contradiction with the assumption that Alice won the game at the $m$th state because, when both players apply memoryless strategies, a repetition of a state means that the game is going to loop forever. The repeated part cannot contain the state $0^n$ because of the minimality of $m$.
 \end{proof}
 
 \begin{proposition}
@@ -617,12 +612,14 @@ In this section, we provide an efficient way to compute the strategies. Specific
 The ranking function we propose is given in the following two definitions:
 
 \begin{definition}
-	For a state $s=\T{b_0,\dots,b_{n-1}}$ and $k \in \{0,\dots,n-1\}$ let  $val(s,k)=\sum_{i=1}^{n}  b_{k-i} 2^i$ where index arithmetic is modulo $n$ (i.e., we add $n$ to negative indexes).
+	For a state $s=\T{b_0,\dots,b_{n-1}}$ and $k \in \{0,\dots,n-1\}$ let  $val(s,k)=\sum_{i=1}^{n}  2^{i-1}b_{(k-i) \bmod n}$.
 \end{definition}
-The index $k$ that maximizes the value is called the $head$ of the state and the maximal value is called the $rank$ of the state:
+The index $k$ that maximizes the value is called the $\head$ of the state and the maximal value is called the $rank$ of the state:
 \begin{definition}
-	For a state $s$ let  $head(s)=\arg \max_k val(s,k)$ and $rank(s)=val(s,head(s))$.
+	For a state $s$ let  $\head(s)=\min \arg \max_k val(s,k)$ and $rank(s)=val(s,\head(s))$. 
 \end{definition}
+
+The $\min$ in the above definitions is for the case where $s$ is periodic. When $s$ is periodic there will be multiple values of $k$ for which $val(s,k)$ achieves the maximum, so $\arg \max_k$ will give a set rather than a single value. In this case we (arbitrarily) choose $\head(s)$ to be the minimal such index.
 
 For example, the rank of the state
 \begin{center}
@@ -652,32 +649,35 @@ For example, the rank of the state
 		\end{tikzpicture}
 	}
 \end{center}
-is the number $110010_2=50_{10}$, where subscripts denote number bases. In this state, the handle points at the head, i.e., $head(s)=n-1$. It does not have to be that way.
+is the number $110010_2=50_{10}$, where subscripts denote number bases. Here, $s=\T{1,1,0,0,1,0}$, $n=6$ and $\head(s)=0$. 
 
-Using this notation, we can describe an easy to compute winning strategy for Alice.  The trick in this strategy is that Alice can force that the rank of the state increases repeatedly until the game arrives at the state with the maximal  rank, $\T{1,\dots,1}$, from which Alice can win in $n$ turns by putting $0$ in all the bits. To describe the strategy we need one last bit of notation:
+Using this notation, we can describe an easy to compute winning strategy for Alice.  The trick in this strategy is that Alice can force that the rank of the state increases repeatedly until the game arrives at the state with the maximal  rank, $\T{1,\dots,1}$, from which Alice can win in $n$ turns by putting $0$ in all the bits. To describe the strategy we need one last notation:
 
 \begin{definition}
-	Let $tail(s)$ be the index of the last nonzero bit before $head(s)$ in cyclic order:
-	$tail(s) = \max \{ i \leq head(s) \colon b_i \neq 0 \}$ where index arithmetic is modulo $n$ (i.e., we add $n$ to negative numbers).
-	%$tail(s) = (\max \{ i \leq head(s) \colon b_{(i+n) \bmod n} \neq 0 \}+n)  \bmod n.$
+	For a state $s \neq 0^n$, let $\tail(s)$ be the index of the last nonzero bit before $\head(s)$ in cyclic order:
+	$\tail(s) = \max\{ \head(s) - (n-1) \leq i \leq \head(s) \colon  b_{i \bmod n} \ne 0 \}$.
+	%$\tail(s) = \max \{ i \leq \head(s) \colon b_i \neq 0 \} \bmod n$ where index arithmetic is modulo $n$ (i.e., we add $n$ to negative numbers).
+	%$\tail(s) = \max \{ i \leq \head(s) \colon b_i \neq 0 \} \bmod n$ where index arithmetic is modulo $n$ (i.e., we add $n$ to negative numbers).
+	
+	%$\tail(s) = (\max \{ i \leq \head(s) \colon b_{(i+n) \bmod n} \neq 0 \}+n)  \bmod n.$
 \end{definition}
 
-For example, for the above state, $tail(s)=n-2$, corresponding to the digit at five o'clock in the circular depiction of the state. In general, in the circular depiction of states, $tail(s)$ is the first nonzero bit after (inclusive) $head(s)$ going clockwise.
+For example, for the above state, $\tail(s)=4$, corresponding to the digit at five o'clock in the circular depiction of the state. In general, in the circular depiction of states, $\tail(s)$ is the first nonzero bit after (inclusive) $\head(s)$ going clockwise.
 
-We can now state the winning strategy for Alice: put zero if and only if the handle is on $tail(s)$, i.e., if and only if $tail(s)=n-1$. Formally:
+We can now state the winning strategy for Alice: put zero if and only if the handle is on $\tail(s)$, i.e., if and only if $\tail(s)=n-1$. Formally:
 
 \begin{proposition}
 	The only winning memoryless strategy for Alice is given by  $$A(s) =
 		\begin{cases}
 			0 &
-			\text{if } tail(s)=n-1; \\
+			\text{if } \tail(s)=n-1; \\
 			1 &
 			\text{otherwise.}
 		\end{cases} $$
 		\label{prop:alice-eff-comp-strategy}
 \end{proposition}
 \begin{proof}
-	If we are in a state were $tail(s)=n-1$, i.e., the handle in the circular depiction of the game points at the $tail(s)$ bit, then Alice's strategy effectively starts from the least significant nonzero bit of $rank(s)$ and puts zero in it (we are talking about the rank of the state after Alice's move). If Bob is not going to switch any of the zeroes in this number to one (and, by that, increase the rank of the state), we are going to arrive at the state $0^n$ and Alice wins. Therefore, we get that either the rank of the state increases repeatedly until we reach the state $1^n$, from which Alice wins in $n$ turns, or Bob lets the game arrive at the state $0^n$ before that. Either way, Alice wins. By Proposition~\ref{prop:opt-bob}, this is the only winning strategy for Alice.
+	If we are in a state where $\tail(s)=n-1$, i.e., the handle in the circular depiction of the game points at the $\tail(s)$ bit, then Alice's strategy effectively starts from the least significant nonzero bit of $rank(s)$ and puts zero in it (we are talking about the rank of the state after Alice's move). If Bob is not going to switch any of the zeroes in this number to one (and, by that, increase the rank of the state), we are going to arrive at the state $0^n$ and Alice wins. Therefore, we get that either the rank of the state increases repeatedly until we reach the state $1^n$, from which Alice wins in $n$ turns, or Bob lets the game arrive at the state $0^n$ before that. Either way, Alice wins. By Proposition~\ref{prop:opt-bob}, this is the only winning strategy for Alice.
 \end{proof}
 
 \begin{proposition}
@@ -685,7 +685,7 @@ We can now state the winning strategy for Alice: put zero if and only if the han
 	$$B(b_0,\dots,b_{n-2},0) =
 	\begin{cases}
 	1 &
-	\text{if } tail(b_0,\dots,b_{n-2},1)=n-1; \\
+	\text{if } \tail(b_0,\dots,b_{n-2},1)=n-1; \\
 	0 &
 	\text{otherwise.}
 	\end{cases} $$
@@ -695,26 +695,26 @@ We can now state the winning strategy for Alice: put zero if and only if the han
 	With this strategy Bob minimizes the inevitable increase of rank. By Proposition~\ref{prop:opt-alice}, this is the only winning strategy for Bob.
 \end{proof}
 
-The only nontrivial computation in the strategies given in Proposition~\ref{prop:alice-eff-comp-strategy} and in Proposition~\ref{prop:bob-eff-comp-strategy} is the operator $tail(s)$ which can be directly computed in $O(n)$ time and memory. 
+The only nontrivial computation in the strategies given in Proposition~\ref{prop:alice-eff-comp-strategy} and in Proposition~\ref{prop:bob-eff-comp-strategy} is the operator $\tail(s)$ which can be directly computed in $O(n)$ time and memory. 
 
 Based on the strategies given in  in Proposition~\ref{prop:alice-eff-comp-strategy} and in Proposition~\ref{prop:bob-eff-comp-strategy} and the fact that the game play is exactly the reverse of the prefer-one sequence, we can give the following shift-rule for this sequence:
 
 \begin{corrolary}
 The function
-$$nxt(b_0,\dots,b_{n-2},b_{n-1})=\begin{cases}
-	\T{1-b_{n-1},b_0,\dots,b_{n-2}} & \text{if } tail(b_0,\dots,b_{n-2},1); \\
+$$\nxt(b_0,\dots,b_{n-2},b_{n-1})=\begin{cases}
+	\T{1-b_{n-1},b_0,\dots,b_{n-2}} & \text{if } \tail(b_0,\dots,b_{n-2},1); \\
 	\T{b_{n-1},b_0,\dots,b_{n-2}} & \text{otherwise.}
 \end{cases}$$
 is a shift rule for the reversed prefer-one de Bruijn sequence.
 \end{corrolary}
 
 
-Since $tail(s)$ can be computed with $O(n)$ time and memory complexity, we say that this shift-rule is efficiently computable.
+Since $\tail(s)$ can be computed with $O(n)$ time and memory complexity, we say that this shift-rule is efficiently computable.
 
 \section{Beyond pref-max: A game for any de Bruijn sequence} 
 \label{sec:games-for-all-DB-seq}
 
-A generalization of the prefer-one construction, to construct all binary de Bruijn of ordern $n$, was proposed by L. R. Ford~\cite{ford1957cyclic}. The, so called, Ford algorithm consists of a set of rules that determine which symbol is tried first after a word of length $n-1$ appears. In this section, we follow this direction towards proposal of a game for each de Bruijn sequence such that the optimal strategies for Bob and for Alice for the game generate the sequence. This is a generalization of what we showed above. We follow Ford in that we apply the same set of rules to decide, given the first $n-1$ bits of the game state, whether one in the last bit means Alice's or Bob's turn. For example, the game given in Definition~   \ref{Def:shift game} correspond to the constant rule that says that if the last bit is one its always Alice's turn.
+A generalization of the prefer-one construction, to construct all binary de Bruijn of order $n$, was proposed by L. R. Ford~\cite{ford1957cyclic}. The, so called, Ford algorithm consists of a set of rules that determine which symbol is tried first after a word of length $n-1$ appears. In this section, we follow this direction towards proposal of a game for each de Bruijn sequence such that the optimal strategies for Bob and for Alice for the game generate the sequence. This is a generalization of what we showed above. We follow Ford in that we apply the same set of rules to decide, given the first $n-1$ bits of the game state, whether one in the last bit means Alice's or Bob's turn. For example, the game given in Definition~\ref{Def:shift game} correspond to the constant rule that says that if the last bit is one it is always Alice's turn.
 
 \begin{definition}
 	\label{Def:generalized-shift game} Given a function $f\colon \{0,1\}^{n-1} \to \{0,1\}$, an $n$-bit generalized shift game is played by two players, Alice and Bob, as follows. The initial state of the game is the $n$-tuple $s_0=
@@ -749,7 +749,7 @@ This is a direct generalization of \REF{Definition}{Def:shift game}. Specificall
 
 	Because $s_{t'-1}$ and $s_{t'}$ are consecutive substrings of length $n$, we have that $s_{t'-1} \in \{ \langle b_0,\dots,b_{n-2},f(b_0,\dots,b_{n-2})\rangle, \langle b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2}) \rangle \}$. Because $s_{t+1} \neq s_{t'}$, we get that $s_{t} \neq s_{t'-1}$ which leaves us only the option $s_{t'-1}=\T{b_0,\dots,b_{n-2},1-f(b_0,\dots,b_{n-2})}$. As $s_{t'-1}$ and $s_{t}$ differ only in the last bit, the definition of $f$ gives us that $s_{t'-1}$ appears closer to the beginning of the sequence, i.e., $t'-1 < t$, which implies that $t'$ is smaller than $t+1$.
 	
-	With these two facts, analogous to claims \ref{clm:j<i} and  \ref{clm:j>i}, we are exactly where we were before propositions \ref{S-is-optimal-for-Alice} and \ref{prop:opt-alice} when we were analyzing the pref-one sequence. It follows, using the same arguments as in the proofs of these propositions, that if both players play optimally, the resulting game play is $s_0,\dots,s_{2^n-1}$.
+	With these two facts, analogous to Claims \ref{clm:j>i} and \ref{clm:j<i}, we are exactly where we were before Propositions \ref{S-is-optimal-for-Alice} and \ref{prop:opt-alice} when we were analyzing the pref-one sequence. It follows, using the same arguments as in the proofs of these propositions, that if both players play optimally, the resulting game play is $s_0,\dots,s_{2^n-1}$.
 \end{proof}
 
 %For example, the reversed prefer-opposite de Bruijn sequence is generated by the preference function 
