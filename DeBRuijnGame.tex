@@ -109,9 +109,30 @@ A binary de Bruijn sequence of order $n$ is a sequence of bits (elements of $\{0
 A shift-rule for a de Bruijn sequence of order $n$ is a function that maps each substring of length $n$ to the next substring of length $n$ in the sequence~\cite{SAWADA2017524}. In this paper we use combinatorial game theory~\cite{berlekamp2003winning} to develop an efficiently computable ($O(n)$ time and memory) shift-rule for the reversed prefer-one sequence. Note that the shift-rule described above is not efficient as it requires exponential amount of memory and time. Beyond the formulation of the rule, the paper reveals a new connection between the combinatorics of de Bruijn sequences and games. We propose a two-player combinatorial game called ``shift game" such that, when both players play optimally, the sequence of states of the game form the prefer-one de Bruijn sequence. We then analyze the game to find efficiently computable strategies for the players and get and, from that, get an efficiently computable shift-rule for the sequence. We also show that it is possible to extend the approach to all other de Bruijn sequences: given any de Bruijn sequence we define a two-player combinatorial game such that the sequence is generated if both players play optimally. This shows the generality of our approach: if we can design an efficiently computable strategy for any of these games, we automatically get an efficiently computable shift-rule for the corresponding sequence.
 
 
-A preliminary version of this paper was presented in a control-theory conference~\cite{weiss2007combinatorial} where the focus was on solving a control theoretic problem using a combinatorial analysis. This was our initial motivation for studying the prefer-max shift-game. Here, we improve the analysis (give a solution with a lower complexity), generalize it to other De-Bruijn sequences, give a more complete proofs, and take a very different focus. Specifically, for the combinatorics research community we believe that the main application of shift-games is as a tool for finding efficient procedures for computing shift-rules of De-Bruijn sequences as demonstrated by the shift-game that corresponds to the prefer-one sequence. 
+\def \A {\begin{bmatrix}
+		0 & 1 & \cdots & 0 \\
+		\vdots & \vdots & \ddots & \vdots & \\
+		0 & 0 & \cdots & 1 \\
+		a_1(i) & a_2(i) & \cdots & a_{n}(i) 
+\end{bmatrix}}
 
-The paper proceeds as follows. In \REF{Section}{sec:game} we define the shift game. In \REF{Section}{sec:alice-wins} we solve the game. In \REF{Section}{sec:optimal-strategies} we show that a solution to the game gives a shift-rule for the reversed prefer-one sequence. In Section~\ref{sec:efficient-optimal} we provide efficiently computable strategies for Alice and Bob and propose an efficient shift-rule for the reversed prefer-one sequence. In Section~\ref{sec:games-for-all-DB-seq} we propose a family of games that correspond to all the binary de Bruijn sequences.
+
+\def \B {\begin{bmatrix}
+		0 \\ \vdots \\ 0 \\ 1
+\end{bmatrix}}
+
+\def \C {\begin{bmatrix}
+		1 & 0 & \cdots & 0
+\end{bmatrix}}
+
+
+A preliminary version of a part of this paper was presented in  a control-theory conference~\cite{weiss2007combinatorial} where the main focus was on solving a controller synthesis problem using a combinatorial analysis. In short, the control theoretic setting described in~\cite{weiss2007combinatorial} requires analysis of the difference equation: 
+$$x_{i+1} = \A x_i +  k(i) (\C x) \B $$
+where $x_0,x_1,\dots$ is a sequence of vectors in $\R^n$, the scalars $a_1(i),\dots,a_n(i)$ are set by an adversary at each round and the scalar $k(i)$ is to be chosen by us (given $x_i$ and $a_1(i),\dots,a_n(i)$) such that $x_{2^n}=0$ for any $x_0$. 
+Clearly, we can use $k(i)$ to control whether the last coordinate of $x_{i+1}$ is zero if and only if the first coordinate of $x_i$ is not zero. Otherwise, the adversary can choose any value for the last coordinate of $x_{i+1}$ (unless $x_i$ is already zero). Thus, we arrived at a need to analyze and solve the shift-game. 
+This was our initial motivation for studying the game. Here, we improve the analysis (give a solution with a lower complexity), generalize it to other De-Bruijn sequences, give complete proofs, and take a different focus. Specifically, for the combinatorics research community we believe that the main application of shift-games is as a tool for finding efficient procedures for computing shift-rules of De-Bruijn sequences as demonstrated by the shift-game that corresponds to the prefer-one sequence and extends to all other De Bruijn sequences as shown in \REF{Section}{sec:games-for-all-DB-seq}.
+
+The paper proceeds as follows. In \REF{Section}{sec:game} we define the shift game. In \REF{Section}{sec:alice-wins} we solve the game. In \REF{Section}{sec:optimal-strategies} we show that a solution to the game gives a shift-rule for the reversed prefer-one sequence. In \REF{Section}{sec:efficient-optimal} we provide efficiently computable strategies for Alice and Bob and propose an efficient shift-rule for the reversed prefer-one sequence. In \REF{Section}{sec:games-for-all-DB-seq} we propose a family of games that correspond to all the binary de Bruijn sequences.
 
 \section{The shift game}
 \label{sec:game}
